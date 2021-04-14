@@ -67,9 +67,19 @@ public class DirectProviceService2 {
         rabbitTemplate.setMandatory(true);
 
         rabbitTemplate.setReturnsCallback(new RabbitTemplate.ReturnsCallback() {
+            /**
+             * message消息数据
+             * replycode 错误码
+             * replayText 错误原因
+             * exchange 交换机名称
+             * routeingkey 路由键
+             *
+             * @param returned
+             */
             @Override
             public void returnedMessage(ReturnedMessage returned) {
                 System.out.println("回退消息="+returned);
+                //这边要进行处理，一般来说是将失败的消息，放到其他的交换机或者是路由键但找工作
             }
         });
 

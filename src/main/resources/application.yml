@@ -12,4 +12,14 @@ spring:
     publisher-returns: true
 #    这边听说新版要配置这个才能提示成功回调的消息
     publisher-confirm-type: correlated
-
+    listener:
+      simple:
+        retry:
+          # 开启自动重试,这边的重试指的是手动消息确认没有确认的重试次数
+          enabled: true
+          # 最大重试次数
+          max-attempts: 5
+          # 重试时间间隔
+          initial-interval: 3000
+#          这边是开启手动消息确认的功能
+        acknowledge-mode: manual
