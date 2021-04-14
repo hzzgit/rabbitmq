@@ -1,5 +1,6 @@
 package com.hzz.rabbitmqspringboot.direct;
 
+import org.springframework.amqp.core.ReturnedMessage;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,8 @@ import java.util.UUID;
  * @date ：2021/4/14 20:54
  */
 @Service
-public class DirectProviceService {
+public class DirectProviceService2 {
 
-    /**
-     * 这边注入的是一个单例的rabbit发送类
-     */
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
@@ -33,15 +31,45 @@ public class DirectProviceService {
 
     @PostConstruct
     private void init(){
+        /**
+         * 开启回调函数，这个意思是连交换机都没有发送到的情况
+         * 步骤:
+         *     1、配置yml文件中
+         *         publisher-returns: true
+         * #    这边听说新版要配置这个才能提示成功回调的消息
+         *     publisher-confirm-type: correlated
+         *
+         *     2、rabbitTemplate需要设置成多例才可以进行多个交换机的回调，
+         *     3、编写交换机发送失败的回调方法
+         *
+         */
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-                /**
-                 * correlationData这个可以在发送的时候添加进去，回调的时候可以拿到数据
-                 * ack，true代表交换机已经收到了这个数据
-                 * cause，失败的原因
-                 */
+
                 System.out.println("回调函数被执行了,ack="+ack+",cause="+cause);
+            }
+        });
+
+
+        /**
+         * 开启回退模式，回退模式概念：当发送到队列失败的时候就会回退，也有可能是队列不存在
+         * 步骤:
+         *   1、开启回退模式，新版本好像不用配置，旧版本需要配置publicsher-returns=true
+         *   2、配置rabbitTemplate中的setReturnsCallback,也就是回退函数
+         *   3、设置交换机exchange处理消息的模式
+         *       (1)默认交换机是会直接丢弃这消息
+         *       (2)如果没有路由到queue，则返回消息给发送方的returnedMessage回调方法中 去
+         */
+
+
+        //设置交换机处理失败消息的模式，这边如果是true就是说明可以将发送到queue的消息进行回退通知到发送端
+        rabbitTemplate.setMandatory(true);
+
+        rabbitTemplate.setReturnsCallback(new RabbitTemplate.ReturnsCallback() {
+            @Override
+            public void returnedMessage(ReturnedMessage returned) {
+                System.out.println("回退消息="+returned);
             }
         });
 
@@ -73,7 +101,7 @@ public class DirectProviceService {
         map.put("createTime",createTime);
         //将消息携带绑定键值：TestDirectRouting 发送到交换机TestDirectExchange
 
-        rabbitTemplate.convertAndSend("SpringDirectExchange", "SpringDirectRouting", map);
+        rabbitTemplate.convertAndSend("SpringDirectExchange", "SpringDirectRouting11", map);
 
     }
 }
