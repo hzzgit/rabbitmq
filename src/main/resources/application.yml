@@ -1,0 +1,11 @@
+server:
+  port: 8021
+spring:
+  application:
+    name: abbitmq-provider
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
