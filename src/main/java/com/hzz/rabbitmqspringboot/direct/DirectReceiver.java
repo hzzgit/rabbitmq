@@ -14,7 +14,9 @@ import java.util.Map;
 /**
  * @author ：hzz
  * @description：consumer ack机制
+ * 限流机制
  * 1、设置手动签收
+ * 2、配置属性 perfetch,配置1的话表示消费端每次从mq拉取一条消息消费，直到手动确认消费完毕后才会继续拉取下一条
  * @date ：2021/4/14 20:58
  */
 @Component
@@ -32,7 +34,7 @@ public class DirectReceiver {
         Map<String, Object> result = (Map<String, Object>) objInt.readObject();//byte[]转map
         System.out.println("接收到邮件队列消息：" + result + "，消息ID：" + messageId);
         // 手动签收
-      //  channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
 
 
         //这边是丢弃并且回到队列第一位

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class DirectProviceService2 {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @PostConstruct
+   // @PostConstruct
     private void init(){
         /**
          * 开启回调函数，这个意思是连交换机都没有发送到的情况

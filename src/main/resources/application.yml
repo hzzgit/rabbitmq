@@ -9,6 +9,7 @@ spring:
     username: admin
     password: admin
     virtual-host: /
+#    是否开启交换机发送成功回调消息
     publisher-returns: true
 #    这边听说新版要配置这个才能提示成功回调的消息
     publisher-confirm-type: correlated
@@ -23,3 +24,5 @@ spring:
           initial-interval: 3000
 #          这边是开启手动消息确认的功能
         acknowledge-mode: manual
+        #        这边是配置一次拉取多少条，可以实现限流（削峰填谷）:10
+        prefetch: 10
