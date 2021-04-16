@@ -2,7 +2,7 @@ package com.hzz.rabbitmqspringboot.config;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.SerializerMessageConverter;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -23,7 +23,7 @@ public class RabbitTemplateConfig {
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMandatory(true);
-        template.setMessageConverter(new SerializerMessageConverter());
+        template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;
     }
 

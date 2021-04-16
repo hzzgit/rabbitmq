@@ -34,7 +34,7 @@ public class RabbitUserConfig {
         map.put("x-dead-letter-routing-key", "receive_key");
 
         //设置队列的过期时间，一般来说这个用来做延迟队列，配合死信队列即可实现
-        map.put("x-message-ttl",100000);
+        map.put("x-message-ttl",30000);
 
         //设置队列的最大长度，死信队列第二个条件，达到队列最大长度则发送到死信交换机
         map.put("x-max-length",100);
